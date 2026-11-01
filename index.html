@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Ganak is a simple online calculator for everyday mathematical calculations, including addition, subtraction, multiplication and division.">
+
+    <meta name="keywords" content="Ganak, online calculator, basic calculator, mathematical calculator">
+
+    <meta name="author" content="Your Name">
+
+    <meta name="theme-color" content="#BFD7EA">
+
+    <title>Ganak - Online Calculator</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #BFD7EA;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: #ffffff;
+            width: 100%;
+            max-width: 340px;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 79, 45, 0.12);
+        }
+
+        h1 {
+            font-size: 26px;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #004F2D;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #508CA4;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        #display {
+            width: 100%;
+            height: 65px;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #91AEC1;
+            border-radius: 8px;
+            background: #BFD7EA;
+            font-size: 25px;
+            text-align: right;
+            color: #004F2D;
+            outline: none;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 9px;
+        }
+
+        button {
+            height: 58px;
+            border: none;
+            border-radius: 8px;
+            background: #BFD7EA;
+            font-size: 19px;
+            cursor: pointer;
+            color: #004F2D;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #91AEC1;
+        }
+
+        button:focus-visible {
+            outline: 2px solid #004F2D;
+            outline-offset: 2px;
+        }
+
+        .operator {
+            background: #91AEC1;
+            color: #004F2D;
+        }
+
+        .clear {
+            background: #508CA4;
+            color: white;
+        }
+
+        .equal {
+            background: #0A8754;
+            color: white;
+        }
+
+        .equal:hover {
+            background: #004F2D;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #508CA4;
+        }
+
+        @media (max-width: 400px) {
+            .calculator {
+                padding: 18px;
+            }
+
+            button {
+                height: 54px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="calculator">
+
+        <header>
+            <h1>Ganak</h1>
+
+            <p class="subtitle">
+                Everyday Calculations
+            </p>
+        </header>
+
+        <input
+            type="text"
+            id="display"
+            placeholder="0"
+            aria-label="Calculator display"
+            readonly
+        >
+
+        <div class="buttons">
+
+            <button class="clear" onclick="clearDisplay()">AC</button>
+            <button onclick="deleteNumber()">DEL</button>
+            <button class="operator" onclick="addValue('%')">%</button>
+            <button class="operator" onclick="addValue('/')">÷</button>
+
+            <button onclick="addValue('7')">7</button>
+            <button onclick="addValue('8')">8</button>
+            <button onclick="addValue('9')">9</button>
+            <button class="operator" onclick="addValue('*')">×</button>
+
+            <button onclick="addValue('4')">4</button>
+            <button onclick="addValue('5')">5</button>
+            <button onclick="addValue('6')">6</button>
+            <button class="operator" onclick="addValue('-')">−</button>
+
+            <button onclick="addValue('1')">1</button>
+            <button onclick="addValue('2')">2</button>
+            <button onclick="addValue('3')">3</button>
+            <button class="operator" onclick="addValue('+')">+</button>
+
+            <button onclick="addValue('0')">0</button>
+            <button onclick="addValue('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+
+        </div>
+
+        <footer>
+            Ganak Calculator
+        </footer>
+
+    </main>
+
+    <script>
+
+        const display = document.getElementById("display");
+
+        function addValue(value) {
+            if (display.value === "Error") {
+                display.value = "";
+            }
+
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = "";
+        }
+
+        function deleteNumber() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function calculate() {
+            try {
+                let expression = display.value;
+
+                if (!expression || !/^[0-9+\-\*/%.() ]+$/.test(expression)) {
+                    return;
+                }
+
+                expression = expression.replace(
+                    /(\d+(?:\.\d+)?)%/g,
+                    "($1/100)"
+                );
+
+                const answer = Function(
+                    '"use strict"; return (' + expression + ')'
+                )();
+
+                if (!Number.isFinite(answer)) {
+                    display.value = "Error";
+                    return;
+                }
+
+                display.value = Number(answer.toPrecision(12));
+
+            } catch (error) {
+                display.value = "Error";
+            }
+        }
+
+    </script>
+
+</body>
+</html>
